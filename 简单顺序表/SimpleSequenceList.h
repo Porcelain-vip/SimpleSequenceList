@@ -11,16 +11,19 @@ private:
 	int maxcount;
 	Type * DataPtr;
 public:
+	SimpleSequenceList() {};
 	SimpleSequenceList(int);
 	~SimpleSequenceList();
-	int Length();
-	bool Empty();
+	int Length() const;
+	bool Empty() const;
 	void Clear();
-	bool GetData(int, Type &);
-	bool SetData(int, Type &);
-	bool InsertData(int, Type &);
+	bool GetData(int, Type &) const;
+	bool SetData(int, const Type &);
+	bool InsertData(int, const Type &);
 	bool DeleteData(int, Type &);
-	bool Traverse();
+	bool Traverse() const;
+	SimpleSequenceList(const SimpleSequenceList<Type> &);
+	SimpleSequenceList<Type> * operator=(const SimpleSequenceList<Type> &);
 };
 
 #endif

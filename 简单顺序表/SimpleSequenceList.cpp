@@ -11,17 +11,17 @@ SimpleSequenceList<Type>::SimpleSequenceList(int number)
 template<typename Type>
 SimpleSequenceList<Type>::~SimpleSequenceList()
 {
-	delete DataPtr;
+	delete[]DataPtr;
 }
 
 template<typename Type>
-int SimpleSequenceList<Type>::Length()
+int SimpleSequenceList<Type>::Length() const
 {
 	return count;
 }
 
 template<typename Type>
-bool SimpleSequenceList<Type>::Empty()
+bool SimpleSequenceList<Type>::Empty() const
 {
 	return count == 0;
 }
@@ -31,9 +31,9 @@ void SimpleSequenceList<Type>::Clear()
 {
 	count = 0;
 }
-
+ 
 template<typename Type>
-bool SimpleSequenceList<Type>::GetData(int position, Type & item)
+bool SimpleSequenceList<Type>::GetData(int position, Type & item) const
 {
 	if (position<1 || position>Length()) return false;
 	item = DataPtr[position - 1];
@@ -41,7 +41,7 @@ bool SimpleSequenceList<Type>::GetData(int position, Type & item)
 }
 
 template<typename Type>
-bool SimpleSequenceList<Type>::SetData(int position, Type & item)
+bool SimpleSequenceList<Type>::SetData(int position, const Type & item)
 {
 	if (position<1 || position>Length()) return false;
 	DataPtr[position - 1] = item;
@@ -49,11 +49,11 @@ bool SimpleSequenceList<Type>::SetData(int position, Type & item)
 }
 
 template<typename Type>
-bool SimpleSequenceList<Type>::InsertData(int position, Type & item)
+bool SimpleSequenceList<Type>::InsertData(int position, const Type & item)
 {
 	if (position<1 || position>Length() + 1 || count == maxcount) return false;
-	for (int pos = Length(); pos >= position; pos--) DataPtr[pos] = DataPtr[pos - 1];
-	DataPtr[position - 1] = Item;
+	for (int pos = Length(); pos >= position; --pos) DataPtr[pos] = DataPtr[pos - 1];
+	DataPtr[position - 1] = item;
 	++count;
 	return true;
 }
@@ -69,9 +69,32 @@ bool SimpleSequenceList<Type>::DeleteData(int positon, Type & item)
 }
 
 template<typename Type>
-bool SimpleSequenceList<Type>::Traverse()
+bool SimpleSequenceList<Type>::Traverse() const
 {
 	if (count == 0) return false;
-	for (int i = 0; i < count; ++i) cout << DataPtr[i] << "   ";
+	for (int i = 0; i < Length(); ++i) cout << DataPtr[i] << "   ";
 	return true;
+}
+
+template<typename Type>
+SimpleSequenceList<Type>::SimpleSequenceList(const SimpleSequenceList<Type> & copy)
+{
+		count = copy.count;
+		maxcount = copy.maxcount;
+		DataPtr = new Type[maxcount];
+		for (int pos = 0; pos < count; ++pos) DataPtr[pos] = copy.DataPtr[pos];
+}
+
+template<typename Type>
+SimpleSequenceList<Type> * SimpleSequenceList<Type>::operator=(const SimpleSequenceList<Type> & copy)
+{
+	if (this != &copy)
+	{
+		count = copy.count;
+		maxcount = copy.maxcount;
+		if (DataPtr != nullptr) delete[]DataPtr;
+		DataPtr = new Type[maxcount];
+		for (int pos = 0; pos < count; ++pos) DataPtr[pos] = copy.DataPtr[pos];
+	}
+	return *this;
 }
